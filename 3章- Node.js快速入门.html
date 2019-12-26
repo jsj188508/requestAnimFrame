@@ -54,18 +54,50 @@ $ node -e "console.log('Hello World');" Hello World 我们可以把要执行的�
     我们看到，Node.js 将“HTTP服务器”这一层抽离，直接面向浏览器用户。
     这种架构 从某种意义上来说是颠覆性的，因而会让人心存疑虑：Node.js作为HTTP服务器的效率 足够吗？
     会不会提高耦合程度？我们不打算在这里讨论这种架构的利弊，后面章节会继续 说明  
+    回归正题，让我们创建一个 HTTP 服务器吧。建立一个名为 app.js 的文件，内容 为： 
+   //app.js 
+        var http = require('http'); 
+        http.createServer(function(req, res) {
+            res.writeHead(200, {'Content-Type': 'text/html'}); 
+            res.write('<h1>Node.js</h1>');  
+            res.end('<p>Hello World</p>');
+        }).listen(3000);
+        console.log("HTTP server is listening at port 3000.");
+       接下来运行 node app.js命令，打开浏览器访问 http://127.0.0.1:3000，即可看到图3-2 所示的内容
+     用 Node.js 实现的简单的 HTTP 服务器就这样诞生了。这个程序调用了 Node.js 提供的 http 模块，对所有 HTTP 请求答复同样的内容并监听 3000 端口。在终端中运行这个脚本 时，我们会发现它并不像 Hello World 一样结束后立即退出，而是一直等待，直到按下 Ctrl + C 才会结束。这是因为 listen 函数中创建了事件监听器，使得 Node.js 进程不会退出事件 循环。我们会在后面的章节中详细介绍这其中的奥秘。 
+     小技巧——使用 supervisor 
+        如果你有 PHP 开发经验，会习惯在修改 PHP 脚本后直接刷新浏览器以观察结果，而你 在开发 Node.js 实现的 HTTP 应用时会发现，无论你修改了代码的哪一部份，都必须终止 Node.js 再重新运行才会奏效。这是因为 Node.js 只有在第一次引用到某部份时才会去解析脚 本文件，以后都会直接访问内存，避免重复载入，而 PHP 则总是重新读取并解析脚本（如 果没有专门的优化配置）。Node.js的这种设计虽然有利于提高性能，却不利于开发调试，因 为我们在开发过程中总是希望修改后立即看到效果，而不是每次都要终止进程并重启。 
+    supervisor 可以帮助你实现这个功能，它会监视你对代码的改动，并自动重启 Node.js。 使用方法很简单，首先使用 npm 安装 supervisor： 
+    $ npm install -g supervisor 如果你使用的是 Linux 或 Mac，直接键入上面的命令很可能会有权限错误。原因是 npm 需要把 supervisor 安装到系统目录，需要管理员授权，可以使用 sudo npm install -g supervisor 命令来安装。 接下来，使用 supervisor 命令启动 app.js： 
+    $ supervisor app.js 
 
-        app.js
-               var http=require('http');
-               http.createServer(function(reg,res){
-                    res.writeHead(200,{'Content-Type':'text/html'});
-                    res.write('<h1>hell Node</h1>');
-                    res.end('<p> This is end </p>');
-               }).listen(3000);
-               console.log('监听3000端口');
+    DEBUG: Running node-supervisor with DEBUG:   program 'app.js' DEBUG:   --watch '.' DEBUG:   --extensions 'node|js' DEBUG:   --exec 'node' 
+
+    DEBUG: Starting child process with 'node app.js' DEBUG: Watching directory '/home/byvoid/.' for changes. HTTP server is listening at port 3000. 当代码被改动时，运行的脚本会被终止，然后重新启动。在终端中显示的结果如下： 
+    DEBUG: crashing child DEBUG: Starting child process with 'node app.js' HTTP server is listening at port 3000. supervisor 这个小工具可以解决开发中的调试问题。
+
+3.2 异步式 I/O 与事件式编程 
+    Node.js 大的特点就是异步式 I/O（或者非阻塞 I/O）与事件紧密结合的编程模式。这 种模式与传统的同步式 I/O 线性的编程思路有很大的不同，因为控制流很大程度上要靠事件 和回调函数来组织，一个逻辑要拆分为若干个单元。 
+3.2.1 阻塞与线程 
+   什么是阻塞（block）呢？线程在执行中如果遇到磁盘读写或网络通信（统称为 I/O 操作）， 通常要耗费较长的时间，这时操作系统会剥夺这个线程的 CPU 控制权，使其暂停执行，同 时将资源让给其他的工作线程，这种线程调度方式称为 阻塞。当 I/O 操作完毕时，操作系统 将这个线程的阻塞状态解除，恢复其对CPU的控制权，令其继续执行。这种 I/O 模式就是通 常的同步式 I/O（Synchronous I/O）或阻塞式 I/O （Blocking I/O）             
+    相应地，异步式 I/O （Asynchronous I/O）或非阻塞式 I/O （Non-blocking I/O）则针对 所有 I/O 操作不采用阻塞的策略。
+    当线程遇到 I/O 操作时，不会以阻塞的方式等待 I/O 操作 的完成或数据的返回，而只是将 I/O 请求发送给操作系统，
+    继续执行下一条语句。当操作 系统完成 I/O 操作时，以事件的形式通知执行 I/O 操作的线程，线程会在特定时候处理这个
+    事件。为了处理异步 I/O，线程必须有事件循环，不断地检查有没有未处理的事件，依次予 以处理。
+   阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程。而非阻塞 模式下，一个线程永远在执行计算操作，这个线程所使用的 CPU 核心利用率永远是 100%， I/O 以事件的方式通知。在阻塞模式下，多线程往往能提高系统吞吐量，因为一个线程阻塞 时还有其他线程在工作，多线程可以让 CPU 资源不被阻塞中的线程浪费。而在非阻塞模式 下，线程不会被 I/O 阻塞，永远在利用 CPU。多线程带来的好处仅仅是在多核 CPU 的情况 下利用更多的核，而Node.js的单线程也能带来同样的好处。这就是为什么 Node.js 使用了单 线程、非阻塞的事件编程模式。 
+  图3-3 和图3-4 分别是多线程同步式 I/O 与单线程异步式 I/O 的示例。假设我们有一项工 作，可以分为两个计算部分和一个 I/O 部分，I/O 部分占的时间比计算多得多（通常都是这 样）。如果我们使用阻塞 I/O，那么要想获得高并发就必须开启多个线程。而使用异步式 I/O 时，单线程即可胜任。 
+                
                
-        
-             
-
-
-
+单线程事件驱动的异步式 I/O 比传统的多线程阻塞式 I/O 究竟好在哪里呢？
+    简而言之， 异步式 I/O 就是少了多线程的开销。对操作系统来说，创建一个线程的代价是十分昂贵的， 
+    需要给它分配内存、列入调度，同时在线程切换的时候还要执行内存换页，CPU 的缓存被 清空，
+    切换回来的时候还要重新从内存中读取信息，破坏了数据的局部性。① 
+    当然，异步式编程的缺点在于不符合人们一般的程序设计思维，容易让控制流变得晦涩 难懂，给编码和调试都带来不小的困难。习惯传统编程模式的开发者在刚刚接触到大规模的异 步式应用时往往会无所适从，但慢慢习惯以后会好很多。尽管如此，异步式编程还是较为困难， 不过可喜的是现在已经有了不少专门解决异步式编程问题的库（如async），参见6.2.2节。 表3-1比较了同步式 I/O 和异步式 I/O 的特点。 
+表3-1 
+                同步式 I/O 和异步式 I/O 的特点 
+                
+                同步式 I/O（阻塞式）  异步式 I/O（非阻塞式） 
+                利用多线程提供吞吐量 单线程即可实现高吞吐量 通过事件片分割和线程调度利用多核CPU 通过功能划分利用多核CPU 需要由操作系统调度多线程使用多核 CPU  可以将单进程绑定到单核 CPU  难以充分利用 CPU 资源 可以充分利用 CPU 资源 内存轨迹大，数据局部性弱 内存轨迹小，数据局部性强 符合线性的编程思维 不符合传统编程思维 
+3
+                
+                
