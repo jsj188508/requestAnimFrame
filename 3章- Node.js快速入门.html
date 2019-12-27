@@ -1,46 +1,78 @@
-Node.js 是一个方兴未艾的技术。一直以来，关于 Node.js 的宣传往往针对它“与众不同” 的特性，这使得它显得格外扑朔迷离。事实上，Node.js的绝大部分特性跟大多数语言一样都 是旧瓶装新酒，只是一些激进的特性使它显得很神秘。在这一章中，我们将会讲述Node.js的 种种特性，让你对 Node.js 本身以及如何使用 Node.js 编程有一个全局性的了解，主要内容有：
-  编写第一个Node.js程序；   异步式I/O和事件循环；   模块和包；   调试。 让我们开始这个激动人心的旅程吧。 
+    Node.js 是一个方兴未艾的技术。一直以来，关于 Node.js 的宣传往往针对它“与众不同” 的特性，这使得它显得格外扑朔迷离。
+    事实上，Node.js的绝大部分特性跟大多数语言一样都 是旧瓶装新酒，只是一些激进的特性使它显得很神秘。
+    在这一章中，我们将会讲述Node.js的 种种特性，
+    让你对 Node.js 本身以及如何使用 Node.js 编程有一个全局性的了解，主要内容有：
+         编写第一个Node.js程序；  
+         异步式I/O和事件循环；  
+         模块和包；  
+         调试。 
+    让我们开始这个激动人心的旅程吧。 
+
 3.1 开始用 Node.js 编程 
-Node.js 具有深厚的开源血统，它诞生于托管了许多优秀开源项目的网站—— github。和 大多数开源软件一样，它由一个黑客发起，然后吸引了一小拨爱好者参与贡献代码。一开始 它默默无闻，靠口口相传扩散，直到某一天被一个黑客媒体曝光，进入业界视野，随后便有 一些有远见的公司提供商业支持，使其逐步发展壮大。 用 Node.js 编程是一件令人愉快的事情，因为你将开始用黑客的思维和风格编写代码。 你会发现像这样的语言是很容易入门的，可以快速了解到它的细节，然后掌握它。 
-3.1.1 Hello World 好了，让我们开始实现第一个 Node.js 程序吧。打开你常用的文本编辑器，在其中输入：
- 
-console.log('Hello World'); 将文件保存为 helloworld.js，打开终端，进入 helloworld.js 所在的目录，执行以下命令：
- 
-node helloworld.js 如果一切正常，你将会在终端中看到输出 Hello World。很简单吧？下面让我们来解 释一下这个程序的细节。console 是 Node.js 提供的控制台对象，其中包含了向标准输出写 入的操作，如 console.log、console.error 等。console.log 是我们常用的输出 指令，它和 C 语言中的 printf 的功能类似，也可以接受任意多个参数，支持 %d、%s 变 量引用，例如： 
-//consolelog.js 
- 
-console.log('%s: %d', 'Hello', 25); 输出的是 Hello: 25。这只是一个简单的例子，如果你想了解 console 对象的详细功能， 请参见 4.1.3节。
+    Node.js 具有深厚的开源血统，它诞生于托管了许多优秀开源项目的网站—— github。
+    和 大多数开源软件一样，它由一个黑客发起，然后吸引了一小拨爱好者参与贡献代码。
+    一开始 它默默无闻，靠口口相传扩散，直到某一天被一个黑客媒体曝光，进入业界视野，随后便有 一些有远见的公司提供商业支持，使其逐步发展壮大。
+    用 Node.js 编程是一件令人愉快的事情，因为你将开始用黑客的思维和风格编写代码。 
+    你会发现像这样的语言是很容易入门的，可以快速了解到它的细节，然后掌握它。 
 
+3.1.1 Hello World 好了，让我们开始实现第一个 Node.js 程序吧。
+    打开你常用的文本编辑器，在其中输入：
+    console.log('Hello World'); 将文件保存为 helloworld.js，打开终端，
+    进入 helloworld.js 所在的目录，执行以下命令：
+        node helloworld.js 
+    如果一切正常，你将会在终端中看到输出:
+        Hello World。
+    很简单吧？下面让我们来解释一下这个程序的细节。
+    console 是 Node.js 提供的控制台对象，其中包含了向标准输出写 入的操作，如
+    console.log、console.error 等。
+    console.log 是我们常用的输出 指令，它和 C 语言中的 printf 的功能类似，也可以接受任意多个参数，支持 %d、%s 变 量引用，例如： 
+    //consolelog.js 
+    console.log('%s: %d', 'Hello', 25); 输出的是 Hello: 25。这只是一个简单的例子，如果你想了解 console 对象的详细功能， 请参见 4.1.3节。
 
-3.1.2 Node.js 命令行工具 在前面的 Hello World 示例中，我们用到了命令行中的 node 命令，输入 node --help 可以看到详细的帮助信息： 
-Usage: node [options] [ -e script | script.js ] [arguments]        node debug script.js [arguments] 
- 
-Options:   -v, --version        print node's version   -e, --eval script    evaluate script   -p, --print          print result of --eval   --v8-options         print v8 command line options   --vars               print various compiled-in variables   --max-stack-size=val set max v8 stack size (bytes) 
- 
-Environment variables: NODE_PATH              ';'-separated list of directories                        prefixed to the module search path. NODE_MODULE_CONTEXTS   Set to 1 to load modules in their own                        global contexts. NODE_DISABLE_COLORS    Set to 1 to disable colors in the REPL 
- 
-Documentation can be found at http://nodejs.org/ 
-其中显示了 node 的用法，运行 Node.js 程序的基本方法就是执行 node script.js， 其中 script.js①是脚本的文件名。 除了直接运行脚本文件外，node --help 显示的使用方法中说明了另一种输出 Hello World 的方式： 
-$ node -e "console.log('Hello World');" Hello World 我们可以把要执行的语句作为 node -e 的参数直接执行。 使用 node 的 REPL 模式 REPL （Read-eval-print loop），即输入—求值—输出循环。如果你用过 Python，就会知 道在终端下运行无参数的 python 命令或者使用 Python IDLE 打开的 shell，可以进入一个即 时求值的运行环境。Node.js 也有这样的功能，运行无参数的 node 将会启动一个 JavaScript 的交互式 shell：
+3.1.2 Node.js 命令行工具 
+    在前面的 Hello World 示例中，我们用到了命令行中的 node 命令，输入 node --help 可以看到详细的帮助信息： 
+    Usage: node [options] [ -e script | script.js ] [arguments]        
+    node debug script.js [arguments] 
+    Options:   -v, --version   
+    print node's version   -e, --eval script  
+    evaluate script   -p, --print
+    print result of --eval   --v8-options 
+    print v8 command line options   --vars    
+    print various compiled-in variables 
+    --max-stack-size=val set max v8 stack size (bytes) 
+    Environment variables: NODE_PATH 
+    ';'-separated list of directories
+    prefixed to the module search path. NODE_MODULE_CONTEXTS   
+    Set to 1 to load modules in their own 
+    global contexts. NODE_DISABLE_COLORS
+    Set to 1 to disable colors in the REPL 
+    Documentation can be found at http://nodejs.org/
 
-      $ node > console.log('Hello World'); 
-      Hello World undefined > consol.log('Hello World'); 
-      ReferenceError: consol is not defined    
-            at repl:1:1     
-            at REPLServer.eval (repl.js:80:21)   
-            at repl.js:190:20     
-            at REPLServer.eval (repl.js:87:5) 
-            at Interface.<anonymous> (repl.js:182:12)     
-            at Interface.emit (events.js:67:17)     
-            at Interface._onLine (readline.js:162:10)
-            at Interface._line (readline.js:426:8)   
-            at Interface._ttyWrite (readline.js:603:14)  
-            at ReadStream.<anonymous> (readline.js:82:12) 
-    进入 REPL 模式以后，会出现一个“>”提示符提示你输入命令，输入后按回车，Node.js 将会解析并执行命令。
-  如果你执行了一个函数，那么 REPL 还会在下面显示这个函数的返回 值，上面例子中的 undefined 就是 console.log 的返回值。
-  如果你输入了一个错误的 指令，REPL 则会立即显示错误并输出调用栈。在任何时候，连续按两次 Ctrl + C 即可推出 Node.js 的 REPL 模式。
-  node 提出的 REPL 在应用开发时会给人带来很大的便利，例如我们可以测试一个包能 否正常使用，单独调用应用的某一个模块，执行简单的计算等。 
-                
+        其中显示了 node 的用法，运行 Node.js 程序的基本方法就是执行 node script.js， 其中 script.js①是脚本的文件名。
+    除了直接运行脚本文件外，node --help 显示的使用方法中说明了另一种输出 Hello World 的方式： 
+    $ node -e "console.log('Hello World');" Hello World 我们可以把要执行的语句作为 node -e 的参数直接执行。 
+    使用 node 的 REPL 模式 REPL （Read-eval-print loop），即输入—求值—输出循环。
+    如果你用过 Python，就会知 道在终端下运行无参数的 python 命令或者使用 Python IDLE 打开的 shell，
+    可以进入一个即 时求值的运行环境。Node.js 也有这样的功能，运行无参数的 node 将会启动一个 JavaScript 的交互式 shell：
+     
+        $ node > console.log('Hello World'); 
+        Hello World undefined > consol.log('Hello World'); 
+        ReferenceError: consol is not defined    
+        at repl:1:1     
+        at REPLServer.eval (repl.js:80:21)   
+        at repl.js:190:20     
+        at REPLServer.eval (repl.js:87:5) 
+        at Interface.<anonymous> (repl.js:182:12)     
+        at Interface.emit (events.js:67:17)     
+        at Interface._onLine (readline.js:162:10)
+        at Interface._line (readline.js:426:8)   
+        at Interface._ttyWrite (readline.js:603:14)  
+        at ReadStream.<anonymous> (readline.js:82:12) 
+        进入 REPL 模式以后，会出现一个“>”提示符提示你输入命令，输入后按回车，Node.js 将会解析并执行命令。
+    如果你执行了一个函数，那么 REPL 还会在下面显示这个函数的返回 值，上面例子中的 undefined 就是 console.log 的返回值。
+    如果你输入了一个错误的 指令，REPL 则会立即显示错误并输出调用栈。在任何时候，连续按两次 Ctrl + C 即可推出 Node.js 的 REPL 模式。
+    node 提出的 REPL 在应用开发时会给人带来很大的便利，例如我们可以测试一个包能 否正常使用，单独调用应用的某一个模块，执行简单的计算等。 
+
 3.1.3 建立 HTTP 服务器
     前面的 Hello World 程序对于你来说可能太简单了，因为这个例子几乎可以在任何语言 的教科书上找到对应的内容，既无聊又乏味，
     让我们来点儿不一样的东西，真正感受一下 Node.js 的魅力所在吧。 
@@ -66,45 +98,62 @@ $ node -e "console.log('Hello World');" Hello World 我们可以把要执行的�
        接下来运行 node app.js命令，打开浏览器访问 http://127.0.0.1:3000，即可看到图3-2 所示的内容
      用 Node.js 实现的简单的 HTTP 服务器就这样诞生了。这个程序调用了 Node.js 提供的 http 模块，对所有 HTTP 请求答复同样的内容并监听 3000 端口。在终端中运行这个脚本 时，我们会发现它并不像 Hello World 一样结束后立即退出，而是一直等待，直到按下 Ctrl + C 才会结束。这是因为 listen 函数中创建了事件监听器，使得 Node.js 进程不会退出事件 循环。我们会在后面的章节中详细介绍这其中的奥秘。 
      小技巧——使用 supervisor 
-        如果你有 PHP 开发经验，会习惯在修改 PHP 脚本后直接刷新浏览器以观察结果，而你 在开发 Node.js 实现的 HTTP 应用时会发现，无论你修改了代码的哪一部份，都必须终止 Node.js 再重新运行才会奏效。这是因为 Node.js 只有在第一次引用到某部份时才会去解析脚 本文件，以后都会直接访问内存，避免重复载入，而 PHP 则总是重新读取并解析脚本（如 果没有专门的优化配置）。Node.js的这种设计虽然有利于提高性能，却不利于开发调试，因 为我们在开发过程中总是希望修改后立即看到效果，而不是每次都要终止进程并重启。 
+        如果你有 PHP 开发经验，会习惯在修改 PHP 脚本后直接刷新浏览器以观察结果，而你 
+    在开发 Node.js 实现的 HTTP 应用时会发现，无论你修改了代码的哪一部份，都必须终止 Node.js 再重新运行才会奏效。
+    这是因为 Node.js 只有在第一次引用到某部份时才会去解析脚 本文件，以后都会直接访问内存，避免重复载入，
+    而 PHP 则总是重新读取并解析脚本（如 果没有专门的优化配置）。Node.js的这种设计虽然有利于提高性能，却不利于开发调试，
+    因 为我们在开发过程中总是希望修改后立即看到效果，而不是每次都要终止进程并重启。 
+            
     supervisor 可以帮助你实现这个功能，它会监视你对代码的改动，并自动重启 Node.js。 使用方法很简单，首先使用 npm 安装 supervisor： 
-    $ npm install -g supervisor 如果你使用的是 Linux 或 Mac，直接键入上面的命令很可能会有权限错误。原因是 npm 需要把 supervisor 安装到系统目录，需要管理员授权，可以使用 sudo npm install -g supervisor 命令来安装。 接下来，使用 supervisor 命令启动 app.js： 
+    $ npm install -g supervisor 如果你使用的是 Linux 或 Mac，直接键入上面的命令很可能会有权限错误。
+    原因是 npm 需要把 supervisor 安装到系统目录，需要管理员授权，可以使用 sudo npm install -g supervisor 命令来安装。
+    接下来，使用 supervisor 命令启动 app.js： 
     $ supervisor app.js 
-
-    DEBUG: Running node-supervisor with DEBUG:   program 'app.js' DEBUG:   --watch '.' DEBUG:   --extensions 'node|js' DEBUG:   --exec 'node' 
-
-    DEBUG: Starting child process with 'node app.js' DEBUG: Watching directory '/home/byvoid/.' for changes. HTTP server is listening at port 3000. 当代码被改动时，运行的脚本会被终止，然后重新启动。在终端中显示的结果如下： 
-    DEBUG: crashing child DEBUG: Starting child process with 'node app.js' HTTP server is listening at port 3000. supervisor 这个小工具可以解决开发中的调试问题。
+    DEBUG: Running node-supervisor with 
+    DEBUG: program 'app.js' DEBUG:   --watch '.' 
+    DEBUG: --extensions 'node|js' DEBUG:   --exec 'node' 
+    DEBUG: Starting child process with 'node app.js' 
+    DEBUG: Watching directory '/home/byvoid/.' for changes. 
+    HTTP server is listening at port 3000. 当代码被改动时，运行的脚本会被终止，然后重新启动。在终端中显示的结果如下： 
+    DEBUG: crashing child 
+    DEBUG: Starting child process with 'node app.js' 
+    HTTP server is listening at port 3000. supervisor 这个小工具可以解决开发中的调试问题。
 
 3.2 异步式 I/O 与事件式编程 
-    Node.js 大的特点就是异步式 I/O（或者非阻塞 I/O）与事件紧密结合的编程模式。这 种模式与传统的同步式 I/O 线性的编程思路有很大的不同，因为控制流很大程度上要靠事件 和回调函数来组织，一个逻辑要拆分为若干个单元。 
+    Node.js 大的特点就是异步式 I/O（或者非阻塞 I/O）与事件紧密结合的编程模式。
+    这 种模式与传统的同步式 I/O 线性的编程思路有很大的不同，因为控制流很大程度上要靠事件 
+    和回调函数来组织，一个逻辑要拆分为若干个单元。 
 3.2.1 阻塞与线程 
-   什么是阻塞（block）呢？线程在执行中如果遇到磁盘读写或网络通信（统称为 I/O 操作）， 通常要耗费较长的时间，这时操作系统会剥夺这个线程的 CPU 控制权，使其暂停执行，同 时将资源让给其他的工作线程，这种线程调度方式称为 阻塞。当 I/O 操作完毕时，操作系统 将这个线程的阻塞状态解除，恢复其对CPU的控制权，令其继续执行。这种 I/O 模式就是通 常的同步式 I/O（Synchronous I/O）或阻塞式 I/O （Blocking I/O）             
+        什么是阻塞（block）呢？线程在执行中如果遇到磁盘读写或网络通信（统称为 I/O 操作）， 通常要耗费较长的时间，
+    这时操作系统会剥夺这个线程的 CPU 控制权，使其暂停执行，同 时将资源让给其他的工作线程，这种线程调度方式称为 阻塞。
+    当 I/O 操作完毕时，操作系统 将这个线程的阻塞状态解除，恢复其对CPU的控制权，令其继续执行。
+            
+        这种 I/O 模式就是通 常的同步式 I/O（Synchronous I/O）或阻塞式 I/O （Blocking I/O）             
     相应地，异步式 I/O （Asynchronous I/O）或非阻塞式 I/O （Non-blocking I/O）则针对 所有 I/O 操作不采用阻塞的策略。
     当线程遇到 I/O 操作时，不会以阻塞的方式等待 I/O 操作 的完成或数据的返回，而只是将 I/O 请求发送给操作系统，
     继续执行下一条语句。当操作 系统完成 I/O 操作时，以事件的形式通知执行 I/O 操作的线程，线程会在特定时候处理这个
     事件。为了处理异步 I/O，线程必须有事件循环，不断地检查有没有未处理的事件，依次予 以处理。
-   阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程。而非阻塞 模式下，一个线程永远在执行计算操作，这个线程所使用的 CPU 核心利用率永远是 100%， I/O 以事件的方式通知。在阻塞模式下，多线程往往能提高系统吞吐量，因为一个线程阻塞 时还有其他线程在工作，多线程可以让 CPU 资源不被阻塞中的线程浪费。而在非阻塞模式 下，线程不会被 I/O 阻塞，永远在利用 CPU。多线程带来的好处仅仅是在多核 CPU 的情况 下利用更多的核，而Node.js的单线程也能带来同样的好处。这就是为什么 Node.js 使用了单 线程、非阻塞的事件编程模式。 
-  图3-3 和图3-4 分别是多线程同步式 I/O 与单线程异步式 I/O 的示例。假设我们有一项工 作，可以分为两个计算部分和一个 I/O 部分，I/O 部分占的时间比计算多得多（通常都是这 样）。如果我们使用阻塞 I/O，那么要想获得高并发就必须开启多个线程。而使用异步式 I/O 时，单线程即可胜任。 
-                
+            
+    阻塞模式下，一个线程只能处理一项任务，要想提高吞吐量必须通过多线程。而非阻塞 模式下，一个线程永远在执行计算操作，这个线程所使用的 CPU 核心利用率永远是 100%， I/O 以事件的方式通知。在阻塞模式下，多线程往往能提高系统吞吐量，因为一个线程阻塞 时还有其他线程在工作，多线程可以让 CPU 资源不被阻塞中的线程浪费。而在非阻塞模式 下，线程不会被 I/O 阻塞，永远在利用 CPU。多线程带来的好处仅仅是在多核 CPU 的情况 下利用更多的核，而Node.js的单线程也能带来同样的好处。这就是为什么 Node.js 使用了单 线程、非阻塞的事件编程模式。 
+    图3-3 和图3-4 分别是多线程同步式 I/O 与单线程异步式 I/O 的示例。假设我们有一项工 作，可以分为两个计算部分和一个 I/O 部分，I/O 部分占的时间比计算多得多（通常都是这 样）。如果我们使用阻塞 I/O，那么要想获得高并发就必须开启多个线程。而使用异步式 I/O 时，单线程即可胜任。 
+
                
 单线程事件驱动的异步式 I/O 比传统的多线程阻塞式 I/O 究竟好在哪里呢？
     简而言之， 异步式 I/O 就是少了多线程的开销。对操作系统来说，创建一个线程的代价是十分昂贵的， 
     需要给它分配内存、列入调度，同时在线程切换的时候还要执行内存换页，CPU 的缓存被 清空，
     切换回来的时候还要重新从内存中读取信息，破坏了数据的局部性。① 
     当然，异步式编程的缺点在于不符合人们一般的程序设计思维，容易让控制流变得晦涩 难懂，给编码和调试都带来不小的困难。
-             习惯传统编程模式的开发者在刚刚接触到大规模的异 步式应用时往往会无所适从，但慢慢习惯以后会好很多。尽管如此，
-             异步式编程还是较为困难， 不过可喜的是现在已经有了不少专门解决异步式编程问题的库（如async），参见6.2.2节。 
-             表3-1比较了同步式 I/O 和异步式 I/O 的特点。 
-             
-                                表3-1 同步式 I/O 和异步式 I/O 的特点 
-                同步式 I/O（阻塞式）                           异步式 I/O（非阻塞式） 
-                利用多线程提供吞吐量                           单线程即可实现高吞吐量 
-                通过事件片分割和线程调度利用多核CPU             通过功能划分利用多核CPU 
-                需要由操作系统调度多线程使用多核 CPU            可以将单进程绑定到单核 CPU 
-                难以充分利用 CPU 资源                          可以充分利用 CPU 资源 
-                内存轨迹大，数据局部性弱                        内存轨迹小，数据局部性强
-                符合线性的编程思维                              不符合传统编程思维 
+     习惯传统编程模式的开发者在刚刚接触到大规模的异 步式应用时往往会无所适从，但慢慢习惯以后会好很多。尽管如此，
+     异步式编程还是较为困难， 不过可喜的是现在已经有了不少专门解决异步式编程问题的库（如async），参见6.2.2节。 
+     表3-1比较了同步式 I/O 和异步式 I/O 的特点。 
+             3-1 同步式 I/O 和异步式 I/O 的特点 
+    同步式 I/O（阻塞式）                           异步式 I/O（非阻塞式） 
+    利用多线程提供吞吐量                           单线程即可实现高吞吐量 
+    通过事件片分割和线程调度利用多核CPU             通过功能划分利用多核CPU 
+    需要由操作系统调度多线程使用多核 CPU            可以将单进程绑定到单核 CPU 
+    难以充分利用 CPU 资源                          可以充分利用 CPU 资源 
+    内存轨迹大，数据局部性弱                        内存轨迹小，数据局部性强
+    符合线性的编程思维                              不符合传统编程思维 
 
 3.2.2 回调函数 
     让我们看看在 Node.js 中如何用异步的方式读取一个文件，下面是一个例子： 
@@ -122,8 +171,14 @@ $ node -e "console.log('Hello World');" Hello World 我们可以把要执行的�
     异步式读取文件就稍微有些违反直觉了，end.先被输出。要想理解结果，我们必须先 知道在 Node.js 中，异步式 I/O 是通过回调函数来实现的。fs.readFile 接收了三个参数， 第一个是文件名，第二个是编码方式，第三个是一个函数，我们称这个函数为回调函数。 JavaScript 支持匿名的函数定义方式，譬如我们例子中回调函数的定义就是嵌套在 fs.readFile 的参数表中的。这种定义方式在 JavaScript 程序中极为普遍，与下面这种定义 方式实现的功能是一致的： 
     //readfilecallback.js 
  
-function readFileCallBack(err, data) {   if (err) {     console.error(err);   } else {     console.log(data);   } } 
- 
+    function readFileCallBack(err, data) {  
+        if (err) {    
+            console.error(err);  
+        } else {   
+            console.log(data);  
+        }
+   } 
+
 var fs = require('fs'); fs.readFile('file.txt', 'utf-8', readFileCallBack); console.log('end.'); 
 
     fs.readFile 调用时所做的工作只是将异步式 I/O 请求发送给了操作系统，然后立即 返回并执行后面的语句，执行完以后进入事件循环监听事件。当 fs 接收到 I/O 请求完成的 事件时，事件循环会主动调用回调函数以完成后续工作。因此我们会先看到 end.，再看到 file.txt 文件的内容。             
